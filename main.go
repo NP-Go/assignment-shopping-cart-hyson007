@@ -10,24 +10,24 @@ import (
 
 var CategorySlice = []string{"Household", "Food", "Drinks", "Snacks", "Stationary"}
 
-type shopItemSt struct {
-	Category int
-	Quantity int
-	Cost     float64
-}
+// type shopItemSt struct {
+// 	Category int
+// 	Quantity int
+// 	Cost     float64
+// }
 
-type shopItemHelper struct {
-	Category int     `json:"category"`
-	Quantity int     `json:"quantity"`
-	Cost     float64 `json:"cost"`
-	Name     string  `json:"name"`
-}
+// type shopItemHelper struct {
+// 	Category int     `json:"category"`
+// 	Quantity int     `json:"quantity"`
+// 	Cost     float64 `json:"cost"`
+// 	Name     string  `json:"name"`
+// }
 
 var shopItemHelperSlice = []shopItemHelper{}
 
-type shopItemMapT map[string]shopItemSt
+// type shopItemMapT map[string]shopItemSt
 
-var shopItemMap = make(shopItemMapT)
+// var shopItemMap = make(shopItemMapT)
 
 func (s shopItemMapT) String() string {
 	output := "Print Current Data.\n"

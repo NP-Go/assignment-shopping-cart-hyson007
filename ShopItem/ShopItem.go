@@ -11,6 +11,6 @@ type shopItemHelper struct {
 
 func (s shopItemHelper) String() string {
 
-	return fmt.Sprintf("%s - %v\n", item, value)
+	return fmt.Sprintf("%s - %v\n", s.Name, s.Cost)
 
 }
