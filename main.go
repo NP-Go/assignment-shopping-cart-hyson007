@@ -16,10 +16,6 @@ type shopItemSt struct {
 	Cost     float64
 }
 
-func (s *shopItemSt) UpdateCat() {
-	s.Category -= 1
-}
-
 type shopItemHelper struct {
 	Category int     `json:"category"`
 	Quantity int     `json:"quantity"`
@@ -29,7 +25,7 @@ type shopItemHelper struct {
 
 var shopItemHelperSlice = []shopItemHelper{}
 
-type shopItemMapT map[string]shopItemSt
+type shopItemMapT map[string]*shopItemSt
 
 var shopItemMap = make(shopItemMapT)
 
@@ -123,13 +119,13 @@ func (s shopItemMapT) modifyItem() {
 
 		if cost > 0 && quantity > 0 {
 			if newName != "" {
-				shopItemMap[newName] = shopItemSt{
+				shopItemMap[newName] = &shopItemSt{
 					Category: value.Category,
 					Quantity: quantity,
 					Cost:     cost,
 				}
 			} else {
-				shopItemMap[oldName] = shopItemSt{
+				shopItemMap[oldName] = &shopItemSt{
 					Category: value.Category,
 					Quantity: quantity,
 					Cost:     cost,
@@ -165,7 +161,7 @@ func (s shopItemMapT) addItem() {
 		return
 	}
 
-	shopItemMap[name] = shopItemSt{
+	shopItemMap[name] = &shopItemSt{
 		getCategoryIndex(cat),
 		quantity,
 		cost,
@@ -260,6 +256,10 @@ func modifyCategory() {
 
 func deleteCategory() {
 	var curCat string
+	if len(shopItemMap) == 0 {
+		fmt.Println("no item in shopping list, please add and try again...")
+		return
+	}
 	fmt.Println("please provide the category to be delete")
 	fmt.Scanln(&curCat)
 	if curCat == "" {
@@ -273,13 +273,13 @@ func deleteCategory() {
 
 			for k, v := range shopItemMap {
 
-				//update the category for the rest items due to reshuffle
-				if v.Category > idx {
-					v.UpdateCat()
-				}
 				// delete the other items within this category
 				if v.Category == idx {
 					delete(shopItemMap, k)
+				}
+
+				if v.Category > idx {
+					v.Category -= 1
 				}
 			}
 
@@ -327,10 +327,10 @@ func loadFromJson() {
 	err = json.Unmarshal(b, &shopItemHelperSlice)
 
 	//repopulate the map from slice
-	shopItemMap = make(map[string]shopItemSt)
+	shopItemMap = make(map[string]*shopItemSt)
 
 	for _, item := range shopItemHelperSlice {
-		shopItemMap[item.Name] = shopItemSt{
+		shopItemMap[item.Name] = &shopItemSt{
 			Category: item.Category,
 			Quantity: item.Quantity,
 			Cost:     item.Cost,
@@ -382,55 +382,55 @@ func main() {
 
 	//loading test data during run time
 
-	shopItemMap["Fork"] = shopItemSt{
+	shopItemMap["Fork"] = &shopItemSt{
 		Category: getCategoryIndex("Household"),
 		Quantity: 4,
 		Cost:     3,
 	}
 
-	shopItemMap["Plates"] = shopItemSt{
+	shopItemMap["Plates"] = &shopItemSt{
 		getCategoryIndex("Household"),
 		4,
 		3,
 	}
 
-	shopItemMap["Cups"] = shopItemSt{
+	shopItemMap["Cups"] = &shopItemSt{
 		getCategoryIndex("Household"),
 		5,
 		3,
 	}
 
-	shopItemMap["Bread"] = shopItemSt{
+	shopItemMap["Bread"] = &shopItemSt{
 		getCategoryIndex("Food"),
 		2,
 		2,
 	}
 
-	shopItemMap["Cake"] = shopItemSt{
+	shopItemMap["Cake"] = &shopItemSt{
 		getCategoryIndex("Food"),
 		3,
 		1,
 	}
 
-	shopItemMap["Coke"] = shopItemSt{
+	shopItemMap["Coke"] = &shopItemSt{
 		getCategoryIndex("Drinks"),
 		5,
 		2,
 	}
 
-	shopItemMap["Sprite"] = shopItemSt{
+	shopItemMap["Sprite"] = &shopItemSt{
 		getCategoryIndex("Drinks"),
 		5,
 		2,
 	}
 
-	shopItemMap["Chips"] = shopItemSt{
+	shopItemMap["Chips"] = &shopItemSt{
 		getCategoryIndex("Snacks"),
 		10,
 		3,
 	}
 
-	shopItemMap["Pencil"] = shopItemSt{
+	shopItemMap["Pencil"] = &shopItemSt{
 		getCategoryIndex("Stationary"),
 		5,
 		1,
