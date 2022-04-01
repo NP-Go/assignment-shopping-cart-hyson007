@@ -16,6 +16,10 @@ type shopItemSt struct {
 	Cost     float64
 }
 
+func (s *shopItemSt) UpdateCat() {
+	s.Category -= 1
+}
+
 type shopItemHelper struct {
 	Category int     `json:"category"`
 	Quantity int     `json:"quantity"`
@@ -264,14 +268,25 @@ func deleteCategory() {
 	}
 	for idx, cat := range CategorySlice {
 		if cat == curCat {
-			// delete category from slice
-			CategorySlice = append(CategorySlice[:idx], CategorySlice[idx+1:]...)
-			// delete the other items within this category
+
+			fmt.Println("before", shopItemMap)
+
 			for k, v := range shopItemMap {
+
+				//update the category for the rest items due to reshuffle
+				if v.Category > idx {
+					v.UpdateCat()
+				}
+				// delete the other items within this category
 				if v.Category == idx {
 					delete(shopItemMap, k)
 				}
 			}
+
+			fmt.Println("after", shopItemMap)
+
+			// delete category from slice
+			CategorySlice = append(CategorySlice[:idx], CategorySlice[idx+1:]...)
 			fmt.Println("category and items in that category has been deleted!")
 
 		}
